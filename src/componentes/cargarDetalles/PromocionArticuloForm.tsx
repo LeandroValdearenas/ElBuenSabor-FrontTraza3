@@ -5,14 +5,12 @@ import PromocionDetalle from '../../entidades/PromocionDetalle';
 import { DataGrid, GridColDef, GridRowSelectionModel, useGridApiRef } from '@mui/x-data-grid';
 import ArticuloManufacturadoService from "../../servicios/ArticuloManufacturadoService";
 import ArticuloManufacturado from "../../entidades/ArticuloManufacturado";
-import { useParams } from "react-router-dom";
 
 function PromocionArticuloForm({ detallesPrevios, onDetallesChange, handleCloseModal }: { detallesPrevios:PromocionDetalle[], onDetallesChange: (nuevosDetalles: PromocionDetalle[]) => void , handleCloseModal:() => void}) {
     const [articulos, setArticulos] = useState<(ArticuloInsumo|ArticuloManufacturado)[]>([]);
     const [busqueda, setBusqueda] = useState('');
     const [rows, setRows] = useState<any[]>([]);
     const [selectedRows, setSelectedRows] = useState<GridRowSelectionModel>([]);
-    const {idsucursal} = useParams();
     const apiRef = useGridApiRef();
 
     const urlapi = import.meta.env.VITE_API_URL;
@@ -21,7 +19,7 @@ function PromocionArticuloForm({ detallesPrevios, onDetallesChange, handleCloseM
     
     const getInsumosRest = async () => {
       const datosInsumo:ArticuloInsumo[] = (busqueda? await articuloInsumoService.buscarXDenominacion(busqueda) : await articuloInsumoService.getAll()).filter(articulo => !detallesPrevios.some(detalle => detalle.articulo.id === articulo.id));
-      const datosManufacturado:ArticuloManufacturado[] = (busqueda? await articuloManufacturadoService.buscarXDenominacion(busqueda, Number(idsucursal)) : await articuloManufacturadoService.getAll()).filter(articulo => !detallesPrevios.some(detalle => detalle.articulo.id === articulo.id));
+      const datosManufacturado:ArticuloManufacturado[] = (busqueda? await articuloManufacturadoService.buscarXDenominacion(busqueda) : await articuloManufacturadoService.getAll()).filter(articulo => !detallesPrevios.some(detalle => detalle.articulo.id === articulo.id));
       const datos = [...datosInsumo.filter(insumo => !insumo.esParaElaborar), ...datosManufacturado]
       setArticulos(datos);
     }
